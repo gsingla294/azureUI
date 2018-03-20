@@ -1,0 +1,450 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json",
+  "handler": "Microsoft.Compute.MultiVm",
+  "version": "0.1.2-preview",
+  "parameters": {
+    "basics": [
+      {
+        "name": "rmCount",
+        "type": "Microsoft.Common.OptionsGroup",
+        "label": "Do you want to deploy a Resiliency Manager (RM)?",
+        "defaultValue": "Yes",
+        "toolTip": "The Resiliency Manager provides the services required for protecting assets, such as virtual machines, within a resiliency domain.\nIt also provides workload automation services.\n[Learn more](https://www.veritas.com/bin/support/docRepoServlet?bookId=125411109-125411112-1&requestType=pdf)",
+        "constraints": {
+          "allowedValues": [
+            {
+              "label": "Yes",
+              "value": 1
+            },
+            {
+              "label": "No",
+              "value": 0
+            }
+          ]
+        },
+        "visible": false
+      },
+      {
+        "name": "imsCount",
+        "type": "Microsoft.Common.OptionsGroup",
+        "label": "Do you want to deploy a Infrastructure Management Server (IMS)?",
+        "defaultValue": "Yes",
+        "toolTip": "An Infrastructure Management Server (IMS) discovers and monitors assets within a data center.\n[Learn more](https://www.veritas.com/bin/support/docRepoServlet?bookId=125411109-125411112-1&requestType=pdf)",
+        "constraints": {
+          "allowedValues": [
+            {
+              "label": "Yes",
+              "value": 1
+            },
+            {
+              "label": "No",
+              "value": 0
+            }
+          ]
+        },
+        "visible": false
+      },
+      {
+        "name": "gwCount",
+        "type": "Microsoft.Common.OptionsGroup",
+        "label": "Do you want to deploy a Gateway?",
+        "defaultValue": "Yes",
+        "toolTip": "The Replication Gateway component of Veritas Resiliency Platform is a staging server that aggregates and batches data from multiple virtual machines during replication and used to perform replication between the data centers.\n[Learn more](https://www.veritas.com/bin/support/docRepoServlet?bookId=125411109-125411112-1&requestType=pdf)",
+        "constraints": {
+          "allowedValues": [
+            {
+              "label": "Yes",
+              "value": 1
+            },
+            {
+              "label": "No",
+              "value": 0
+            }
+          ]
+        },
+        "visible": false
+      }
+    ],
+    "steps": [
+      {
+        "name": "vmSettings",
+        "label": "Virtual Machine settings",
+        "subLabel": {
+          "preValidation": "Configure the Virtual Machine settings",
+          "postValidation": "Done"
+        },
+        "bladeTitle": "Virtual Machine settings",
+        "elements": [
+          {
+            "name": "rmSettings",
+            "type": "Microsoft.Common.Section",
+            "label": "RM settings",
+            "elements": [
+              {
+                "name": "rmName",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Name",
+                "defaultValue": "VRP_RM",
+                "toolTip": "Enter the name of the Resiliency Manager",
+                "constraints": {
+                  "required": true,
+                  "regex": "^[a-z0-9A-Z]{1,30}$",
+                  "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-30 characters long."
+                }
+              },
+              {
+                "name": "rmVmSize",
+                "type": "Microsoft.Compute.SizeSelector",
+                "label": "VM size",
+                "toolTip": "The size of the virtual machine for Resiliency Manager. Two data disks will be used.",
+                "recommendedSizes": [
+                  "Standard_DS4_v2",
+                  "Standard_DS5_v2",
+                  "Standard_A8m_v2"
+                ],
+                "constraints": {
+                  "required": true,
+                  "allowedSizes": [
+                    "Standard_DS4_v2",
+                    "Standard_DS5_v2",
+                    "Standard_DS13_v2",
+                    "Standard_DS14_v2",
+                    "Standard_DS15_v2",
+                    "A6",
+                    "A7",
+                    "A8",
+                    "A9",
+                    "A10",
+                    "A11",
+                    "Standard_A8m_v2",
+                    "Standard_D4",
+                    "Standard_D13"
+                  ]
+                },
+                "osPlatform": "Linux",
+                "count": 1
+              }
+            ],
+            "visible": true
+          },
+          {
+            "name": "imsSettings",
+            "type": "Microsoft.Common.Section",
+            "label": "IMS settings",
+            "elements": [
+              {
+                "name": "imsName",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Name",
+                "defaultValue": "VRP_IMS",
+                "toolTip": "Enter the name of the Infrastructure Management Server",
+                "constraints": {
+                  "required": true,
+                  "regex": "^[a-z0-9A-Z]{1,30}$",
+                  "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-30 characters long."
+                }
+              },
+              {
+                "name": "imsVmSize",
+                "type": "Microsoft.Compute.SizeSelector",
+                "label": "VM size",
+                "toolTip": "The size of the virtual machine for Infrastructure Management Server. Two data disks will be used.",
+                "recommendedSizes": [
+                  "Standard_DS4_v2",
+                  "Standard_DS5_v2",
+                  "Standard_A8m_v2"
+                ],
+                "constraints": {
+                  "required": true,
+                  "allowedSizes": [
+                    "Standard_DS4_v2",
+                    "Standard_DS5_v2",
+                    "Standard_DS13_v2",
+                    "Standard_DS14_v2",
+                    "Standard_DS15_v2",
+                    "A6",
+                    "A7",
+                    "A8",
+                    "A9",
+                    "A10",
+                    "A11",
+                    "Standard_A8m_v2",
+                    "Standard_D4",
+                    "Standard_D13"
+                  ]
+                },
+                "osPlatform": "Linux",
+                "count": 1
+              }
+            ],
+            "visible": true
+          },
+          {
+            "name": "gwSettings",
+            "type": "Microsoft.Common.Section",
+            "label": "Gateway settings",
+            "elements": [
+              {
+                "name": "gwName",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Name",
+                "defaultValue": "VRP_GW1",
+                "toolTip": "Enter the name of the Gateway",
+                "constraints": {
+                  "required": true,
+                  "regex": "^[a-z0-9A-Z]{1,30}$",
+                  "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-30 characters long."
+                }
+              },
+              {
+                "name": "gwVmSize",
+                "type": "Microsoft.Compute.SizeSelector",
+                "label": "VM size",
+                "toolTip": "The size of the virtual machine for Gateway. Two data disks will be used.",
+                "recommendedSizes": [
+                  "Standard_DS4_v2",
+                  "Standard_DS5_v2",
+                  "Standard_A8m_v2"
+                ],
+                "constraints": {
+                  "required": true,
+                  "allowedSizes": [
+                    "Standard_DS4_v2",
+                    "Standard_DS5_v2",
+                    "Standard_DS13_v2",
+                    "Standard_DS14_v2",
+                    "Standard_DS15_v2",
+                    "Standard_A8m_v2",
+                    "Standard_D4",
+                    "Standard_D13"
+                  ]
+                },
+                "osPlatform": "Linux",
+                "count": 1
+              },
+              {
+                "name": "gwDataDiskSize",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Data disk size in GB",
+                "defaultValue": "50",
+                "toolTip": "Enter an integer between 50 GB and 1023 GB. If unsure, use default.",
+                "constraints": {
+                  "required": true,
+                  "regex": "^([5-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|10[01][0-9]|102[0-3])$",
+                  "validationMessage": "Only numbers are allowed, and the value must be within 50-1023."
+                }
+              }
+            ],
+            "visible": true
+          },
+		  {
+			"name": "yumServerSettings",
+			"type": "Microsoft.Common.Section",
+			"label": "Repository Server Settings",
+			"elements": [
+				{
+					
+				}
+			],
+			"visible": true
+		  }
+        ]
+      },
+      {
+        "name": "networkSettings",
+        "label": "Network Settings",
+        "subLabel": {
+          "preValidation": "Configure the Network settings",
+          "postValidation": "Done"
+        },
+        "bladeTitle": "Network Settings",
+        "elements": [
+          {
+            "name": "rmVnet",
+            "type": "Microsoft.Network.VirtualNetworkCombo",
+            "label": {
+              "virtualNetwork": "RM Virtual network",
+              "subnets": "Subnet"
+            },
+            "toolTip": {
+              "virtualNetwork": "",
+              "subnets": ""
+            },
+            "defaultValue": {
+              "name": "rmVnet",
+              "addressPrefixSize": "/24"
+            },
+            "constraints": {
+              "minAddressPrefixSize": "/24"
+            },
+            "options": {
+              "hideExisting": false
+            },
+            "subnets": {
+              "subnet1": {
+                "label": "Subnet",
+                "defaultValue": {
+                  "name": "default",
+                  "addressPrefixSize": "/24"
+                },
+                "constraints": {
+                  "minAddressPrefixSize": "/32",
+                  "minAddressCount": 1,
+                  "requireContiguousAddresses": true
+                }
+              }
+            },
+            "visible": "[equals(basics('rmCount'), 1)]"
+          },
+          {
+            "name": "rmNicIP",
+            "type": "Microsoft.Common.TextBox",
+            "label": "RM NIC Static Private IP Address",
+            "defaultValue": "",
+            "toolTip": "Enter a free IP address which falls within the address range of the RM's virtual network and subnet.",
+            "constraints": {
+              "required": true,
+              "regex": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$",
+              "validationMessage": "Only IPv4 addresses. Please enter an IP address valid in the virtual network."
+            },
+            "visible": "[equals(basics('rmCount'), 1)]"
+          },
+          {
+            "name": "imsVnet",
+            "type": "Microsoft.Network.VirtualNetworkCombo",
+            "label": {
+              "virtualNetwork": "IMS Virtual network",
+              "subnets": "Subnet"
+            },
+            "toolTip": {
+              "virtualNetwork": "",
+              "subnets": ""
+            },
+            "defaultValue": {
+              "name": "imsVnet",
+              "addressPrefixSize": "/24"
+            },
+            "constraints": {
+              "minAddressPrefixSize": "/24"
+            },
+            "options": {
+              "hideExisting": false
+            },
+            "subnets": {
+              "subnet1": {
+                "label": "Subnet",
+                "defaultValue": {
+                  "name": "default",
+                  "addressPrefixSize": "/24"
+                },
+                "constraints": {
+                  "minAddressPrefixSize": "/32",
+                  "minAddressCount": 1,
+                  "requireContiguousAddresses": true
+                }
+              }
+            },
+            "visible": "[equals(basics('imsCount'), 1)]"
+          },
+          {
+            "name": "imsNicIP",
+            "type": "Microsoft.Common.TextBox",
+            "label": "IMS NIC Static Private IP Address",
+            "defaultValue": "",
+            "toolTip": "Enter a free IP address which falls within the address range of the IMS's virtual network and subnet.",
+            "constraints": {
+              "required": true,
+              "regex": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$",
+              "validationMessage": "Only IPv4 addresses. Please enter an IP address valid in the virtual network."
+            },
+            "visible": "[equals(basics('imsCount'), 1)]"
+          },
+          {
+            "name": "gwVnet",
+            "type": "Microsoft.Network.VirtualNetworkCombo",
+            "label": {
+              "virtualNetwork": "Gateway Virtual network",
+              "subnets": "Subnet"
+            },
+            "toolTip": {
+              "virtualNetwork": "",
+              "subnets": ""
+            },
+            "defaultValue": {
+              "name": "gwVnet",
+              "addressPrefixSize": "/24"
+            },
+            "constraints": {
+              "minAddressPrefixSize": "/24"
+            },
+            "options": {
+              "hideExisting": false
+            },
+            "subnets": {
+              "subnet1": {
+                "label": "Subnet",
+                "defaultValue": {
+                  "name": "default",
+                  "addressPrefixSize": "/24"
+                },
+                "constraints": {
+                  "minAddressPrefixSize": "/32",
+                  "minAddressCount": 1,
+                  "requireContiguousAddresses": true
+                }
+              }
+            },
+            "visible": "[equals(basics('gwCount'), 1)]"
+          },
+          {
+            "name": "gwNicIP",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Gateway NIC Static Private IP Address",
+            "defaultValue": "",
+            "toolTip": "Enter a free IP address which falls within the address range of the Gateway's virtual network and subnet.",
+            "constraints": {
+              "required": true,
+              "regex": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$",
+              "validationMessage": "Only IPv4 addresses. Please enter an IP address valid in the virtual network."
+            },
+            "visible": "[equals(basics('gwCount'), 1)]"
+          }
+        ]
+      }
+    ],
+    "outputs": {
+      "location": "[location()]",
+      "rmCount": "[basics('rmCount')]",
+      "imsCount": "[basics('imsCount')]",
+      "gwCount": "[basics('gwCount')]",
+      "rmName": "[steps('vmSettings').rmSettings.rmName]",
+      "imsName": "[steps('vmSettings').imsSettings.imsName]",
+      "gwName": "[steps('vmSettings').gwSettings.gwName]",
+      "rmSize": "[steps('vmSettings').rmSettings.rmVmSize]",
+      "imsSize": "[steps('vmSettings').imsSettings.imsVmSize]",
+      "gwSize": "[steps('vmSettings').gwSettings.gwVmSize]",
+      "gwDataDiskSize": "[int(steps('vmSettings').gwSettings.gwDataDiskSize)]",
+      "rmNicIP": "[steps('networkSettings').rmNicIP]",
+      "imsNicIP": "[steps('networkSettings').imsNicIP]",
+      "gwNicIP": "[steps('networkSettings').gwNicIP]",
+      "rmVirtualNetworkNewOrExisting": "[steps('networkSettings').rmVnet.newOrExisting]",
+      "rmVirtualNetworkName": "[steps('networkSettings').rmVnet.name]",
+      "rmVirtualNetworkResourceGroup": "[steps('networkSettings').rmVnet.resourceGroup]",
+      "rmAddressPrefix": "[steps('networkSettings').rmVnet.addressPrefix]",
+      "rmSubnet1Name": "[steps('networkSettings').rmVnet.subnets.subnet1.name]",
+      "rmSubnet1Prefix": "[steps('networkSettings').rmVnet.subnets.subnet1.addressPrefix]",
+      "imsVirtualNetworkNewOrExisting": "[steps('networkSettings').imsVnet.newOrExisting]",
+      "imsVirtualNetworkName": "[steps('networkSettings').imsVnet.name]",
+      "imsVirtualNetworkResourceGroup": "[steps('networkSettings').imsVnet.resourceGroup]",
+      "imsAddressPrefix": "[steps('networkSettings').imsVnet.addressPrefix]",
+      "imsSubnet1Name": "[steps('networkSettings').imsVnet.subnets.subnet1.name]",
+      "imsSubnet1Prefix": "[steps('networkSettings').imsVnet.subnets.subnet1.addressPrefix]",
+      "gwVirtualNetworkNewOrExisting": "[steps('networkSettings').gwVnet.newOrExisting]",
+      "gwVirtualNetworkName": "[steps('networkSettings').gwVnet.name]",
+      "gwVirtualNetworkResourceGroup": "[steps('networkSettings').gwVnet.resourceGroup]",
+      "gwAddressPrefix": "[steps('networkSettings').gwVnet.addressPrefix]",
+      "gwSubnet1Name": "[steps('networkSettings').gwVnet.subnets.subnet1.name]",
+      "gwSubnet1Prefix": "[steps('networkSettings').gwVnet.subnets.subnet1.addressPrefix]"
+    }
+  }
+}
